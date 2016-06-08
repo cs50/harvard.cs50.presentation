@@ -46,31 +46,40 @@ define(function(require, exports, module) {
                 // handle unloading when presentation is on
                 if (!override && presentationOn) {
                     // toggle off presentation mode for ace and terminal
-                    swapSettings(
-                        "user/cs50/presentation/@editorFontSize", 
-                        "user/ace/@fontSize"
-                    );
-                    swapSettings(
-                        "user/cs50/presentation/@terminalFontSize", 
-                        "user/terminal/@fontsize"
-                    );
+                    updateEditors();
+                }
+                if (override == presentationOn) {
+                    return;
                 }
                 presentationOn = override;
+                updateTree();
             }
             else {
                 presentationOn = !presentationOn;
                 settings.set("user/cs50/presentation/@on", presentationOn);
-                
-                swapSettings(
-                    "user/cs50/presentation/@editorFontSize", 
-                    "user/ace/@fontSize"
-                );
-                swapSettings(
-                    "user/cs50/presentation/@terminalFontSize", 
-                    "user/terminal/@fontsize"
-                );
+                updateEditors();
+                updateTree();
             }
             
+            // ensure menu item is in sync with the current mode
+            menuItem.checked = presentationOn;
+        }
+        
+        function updateEditors() {
+            swapSettings(
+                "user/cs50/presentation/@editorFontSize",
+                "user/ace/@fontSize"
+            );
+            swapSettings(
+                "user/cs50/presentation/@terminalFontSize",
+                "user/terminal/@fontsize"
+            );
+        }
+                
+        function updateTree() {
+            tree.off("draw", updateTree);
+            if (!tree.container)
+                return tree.on("draw", updateTree);
             if (presentationOn) {
                 tree.container.classList.add("presentation-tree");
                 fsCache.model.rowHeightInner = treeRowHeights.presentation;
@@ -81,11 +90,7 @@ define(function(require, exports, module) {
                 fsCache.model.rowHeightInner = treeRowHeights.default;
                 fsCache.model.rowHeight = treeRowHeights.default;
             }
-            
-            tree.refresh(true);
-            
-            // ensure menu item is in sync with the current mode
-            menuItem.checked = presentationOn;
+            tree.tree.renderer.updateFull();
         }
         
         plugin.on("load", function() {
