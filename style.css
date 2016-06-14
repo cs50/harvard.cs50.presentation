@@ -1,27 +1,25 @@
-.presentation-tree * {
+/* file tree */
+.presentation-tree .real .tree-row {
     font-size: 20px;
 }
 
-/* file/folder renaming area and name wrapper */
-.presentation-tree .ace_wrapper *, .presentation-tree .caption {
-    line-height: 25px !important;
+/* filename wrapper */
+.presentation-tree .real .caption {
     height: 25px !important;
 }
-/* vetically center file/folder icon and name in tree row */
-.presentation-tree .tree-row span {
-    position: relative;
-    top: 50%;
-    margin-top: -24px !important;
+.presentation-tree .real .extrainfo {
+    position: static !important;
 }
 
-/* prevent text from bouncing up and down upon renaming file/folder */
-.presentation-tree .ace_editor.ace-tm.ace_one-line.ace_tree-editor.ace_focus, 
-.presentation-tree .ace_layer.ace_cursor-layer, 
-.presentation-tree .ace_layer.ace_marker-layer {
-    margin-top: 0px !important;
+/* tree heading and filename wrapper */
+.presentation-tree .real .caption,
+.presentation-tree .real .heading {
+    line-height: normal;
 }
-.presentation-tree .ace_editor.ace-tm.ace_one-line.ace_tree-editor.ace_focus {
-    border-width: 0px !important;
-    padding-top: 0px !important;
-    padding-bottom: 0px !important;
+
+/* vetically center file/folder icon and name in tree row */
+.presentation-tree .real .tree-row span {
+    position: relative;
+    top: 50%;
+    margin-top: -24px;
 }

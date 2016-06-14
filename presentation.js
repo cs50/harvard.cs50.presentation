@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
     main.consumes = [
-        "fs.cache", "menus", "Plugin", "preferences", "settings", "tree", "ui"
+        "menus", "Plugin", "preferences", "settings", "tree", "ui"
     ];
     main.provides = ["c9.ide.cs50.presentation"];
     return main;
@@ -8,7 +8,6 @@ define(function(require, exports, module) {
     function main(options, imports, register) {
         var Plugin = imports.Plugin;
         
-        var fsCache = imports["fs.cache"];
         var menus = imports.menus;
         var prefs = imports.preferences;
         var settings = imports.settings;
@@ -82,14 +81,15 @@ define(function(require, exports, module) {
                 return tree.on("draw", updateTree);
             if (presentationOn) {
                 tree.container.classList.add("presentation-tree");
-                fsCache.model.rowHeightInner = treeRowHeights.presentation;
-                fsCache.model.rowHeight = treeRowHeights.presentation;
+                tree.tree.renderer.model.rowHeight = treeRowHeights.presentation;
+                tree.tree.renderer.model.rowHeightInner = treeRowHeights.presentation;
             }
             else {
                 tree.container.classList.remove("presentation-tree");
-                fsCache.model.rowHeightInner = treeRowHeights.default;
-                fsCache.model.rowHeight = treeRowHeights.default;
+                tree.tree.renderer.model.rowHeightInner = treeRowHeights.default;
+                tree.tree.renderer.model.rowHeight = treeRowHeights.default;
             }
+
             tree.tree.renderer.updateFull();
         }
         
@@ -160,6 +160,7 @@ define(function(require, exports, module) {
             togglePresentationMode(false);
             menuItem = null;
             treeRowHeights = null;
+            presentationOn = false;
         });
     
         register(null, {
