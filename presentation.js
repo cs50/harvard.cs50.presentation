@@ -1,13 +1,13 @@
 define(function(require, exports, module) {
     main.consumes = [
-        "menus", "Plugin", "preferences", "settings", "tree", "ui"
+        "layout", "menus", "Plugin", "preferences", "settings", "tree", "ui"
     ];
     main.provides = ["c9.ide.cs50.presentation"];
     return main;
 
     function main(options, imports, register) {
         var Plugin = imports.Plugin;
-        
+        var layout = imports.layout;
         var menus = imports.menus;
         var prefs = imports.preferences;
         var settings = imports.settings;
@@ -154,6 +154,11 @@ define(function(require, exports, module) {
             togglePresentationMode(
                 settings.getBool("user/cs50/presentation/@on")
             );
+
+            // update tree row height on theme change
+            layout.on("eachTheme", function() {
+                updateTree();
+            });
         });
         
         plugin.on("unload", function() {
