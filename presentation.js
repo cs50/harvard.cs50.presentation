@@ -1,15 +1,18 @@
 define(function(require, exports, module) {
     main.consumes = [
-        "menus", "panels", "Plugin", "preferences", "settings", "ui"
+        "layout", "login", "menus", "panels", "Plugin", "preferences", "settings",
+        "ace.status", "ui", "c9.ide.cs50.theme"
     ];
     main.provides = ["c9.ide.cs50.presentation"];
     return main;
 
     function main(options, imports, register) {
         var Plugin = imports.Plugin;
+        var layout = imports.layout;
         var menus = imports.menus;
         var panels = imports.panels;
         var prefs = imports.preferences;
+        var status = imports["ace.status"];
         var settings = imports.settings;
         var ui = imports.ui;
 
@@ -17,6 +20,9 @@ define(function(require, exports, module) {
 
         var presentationOn = false;
         var menuItem = null;
+
+        var avatar = null;
+        var themeIcon = null;
 
         /**
          * swaps values of settings at path1 and path2. setting values are
@@ -31,6 +37,26 @@ define(function(require, exports, module) {
             settings.set(path1, val);
         }
 
+        function show(div) {
+            if (div && div.$ext && div.$ext.style) {
+                div.$ext.style.display = "";
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        function hide(div) {
+            if (div && div.$ext && div.$ext.style) {
+                div.$ext.style.display = "none";
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
         /**
          * toggles presentation mode on or off.
          *
@@ -43,8 +69,11 @@ define(function(require, exports, module) {
                 if (!override && presentationOn) {
                     // toggle off presentation mode for ace and terminal
                     updateEditors();
-                    // show file tree
+
                     panels.activate("tree");
+                    status.show();
+                    show(avatar);
+                    show(themeIcon);
                 }
                 if (override == presentationOn) {
                     return;
@@ -55,11 +84,12 @@ define(function(require, exports, module) {
                 presentationOn = !presentationOn;
                 settings.set("user/cs50/presentation/@on", presentationOn);
                 updateEditors();
-                // toggle file tree
-                presentationOn ?
-                    panels.deactivate("tree") :
-                    panels.activate("tree");
             }
+
+            presentationOn ? panels.deactivate("tree") : panels.activate("tree");
+            presentationOn ?  status.hide() : status.show();
+            presentationOn ? hide(avatar) : show(avatar);
+            presentationOn ? hide(themeIcon) : show(themeIcon);
 
             // ensure menu item is in sync with the current mode
             menuItem.checked = presentationOn;
@@ -119,6 +149,16 @@ define(function(require, exports, module) {
                 }
             }, plugin);
 
+            // find avatar and theme icon
+            layout.findParent({name: "preferences"}).childNodes.forEach(function(node) {
+                if (node.class === "btnName") {
+                    avatar = node;
+                }
+                else if(node.class.indexOf("cs50-theme") !== -1) {
+                    themeIcon = node;
+                }
+            });
+
             togglePresentationMode(
                 settings.getBool("user/cs50/presentation/@on")
             );
@@ -128,6 +168,8 @@ define(function(require, exports, module) {
             togglePresentationMode(false);
             menuItem = null;
             presentationOn = false;
+            avatar = null;
+            themeIcon = null;
         });
 
         register(null, {
