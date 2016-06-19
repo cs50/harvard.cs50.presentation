@@ -7,19 +7,19 @@ define(function(require, exports, module) {
     return main;
 
     function main(options, imports, register) {
-        var Plugin = imports.Plugin;
         var layout = imports.layout;
         var menus = imports.menus;
         var panels = imports.panels;
+        var Plugin = imports.Plugin;
         var prefs = imports.preferences;
-        var status = imports["ace.status"];
         var settings = imports.settings;
+        var status = imports["ace.status"];
         var theme = imports["c9.ide.cs50.theme"];
         var ui = imports.ui;
 
         var plugin = new Plugin("CS50", main.consumes);
 
-        var presentationOn = false;
+        var presenting = false;
         var menuItem = null;
 
         /**
@@ -41,11 +41,14 @@ define(function(require, exports, module) {
          * @param {boolean} show show/hide flag.
          */
         function showComponents(show) {
+            if (typeof show !== "boolean")
+                return;
+
             if (show) {
                 panels.activate("tree");
                 status.show();
                 // show avatar
-                ui.setStyleRule(".btnName", "display", "");
+                ui.setStyleRule(".btnName", "display", "initial");
             }
             else {
                 panels.deactivate("tree");
@@ -66,28 +69,28 @@ define(function(require, exports, module) {
         function togglePresentationMode(override) {
             if (typeof override === "boolean") {
                 // handle unloading when presentation is on
-                if (!override && presentationOn) {
+                if (!override && presenting) {
                     // toggle off presentation mode for ace and terminal
                     updateEditors();
 
                     showComponents(true);
                 }
-                if (override == presentationOn) {
+                if (override == presenting) {
                     return;
                 }
-                presentationOn = override;
+                presenting = override;
             }
             else {
-                presentationOn = !presentationOn;
-                settings.set("user/cs50/presentation/@on", presentationOn);
+                presenting = !presenting;
+                settings.set("user/cs50/presentation/@presenting", presenting);
                 updateEditors();
             }
 
             // hide components (e.g., tree) in presentation only
-            showComponents(!presentationOn);
+            showComponents(!presenting);
 
             // ensure menu item is in sync with the current mode
-            menuItem.checked = presentationOn;
+            menuItem.checked = presenting;
         }
 
         function updateEditors() {
@@ -117,14 +120,14 @@ define(function(require, exports, module) {
             // default settings
             settings.on("read", function() {
                 settings.setDefaults("user/cs50/presentation", [
-                    ["on", false],
+                    ["presenting", false],
                     ["editorFontSize", 20],
                     ["terminalFontSize", 20]
                 ]);
             });
 
             settings.on("write", function() {
-                if (settings.getBool("user/cs50/presentation/@on") !== presentationOn) {
+                if (settings.getBool("user/cs50/presentation/@presenting") !== presenting) {
                     menus.click("View/Presentation Mode");
                 }
             });
@@ -137,7 +140,7 @@ define(function(require, exports, module) {
                         position: 10,
                         "Presentation Mode" : {
                             type: "checkbox",
-                            setting: "user/cs50/presentation/@on",
+                            setting: "user/cs50/presentation/@presenting",
                             position: 200
                         }
                     }
@@ -145,16 +148,14 @@ define(function(require, exports, module) {
             }, plugin);
 
             togglePresentationMode(
-                settings.getBool("user/cs50/presentation/@on")
+                settings.getBool("user/cs50/presentation/@presenting")
             );
         });
 
         plugin.on("unload", function() {
             togglePresentationMode(false);
             menuItem = null;
-            presentationOn = false;
-            avatar = null;
-            themeIcon = null;
+            presenting = false;
         });
 
         register(null, {
