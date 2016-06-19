@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     main.consumes = [
-        "layout", "login", "menus", "panels", "Plugin", "preferences", "settings",
-        "ace.status", "ui", "c9.ide.cs50.theme"
+        "ace.status", "c9.ide.cs50.theme", "layout", "menus", "panels",
+        "Plugin", "preferences", "settings", "tree", "ui"
     ];
     main.provides = ["c9.ide.cs50.presentation"];
     return main;
@@ -14,15 +14,13 @@ define(function(require, exports, module) {
         var prefs = imports.preferences;
         var status = imports["ace.status"];
         var settings = imports.settings;
+        var theme = imports["c9.ide.cs50.theme"];
         var ui = imports.ui;
 
         var plugin = new Plugin("CS50", main.consumes);
 
         var presentationOn = false;
         var menuItem = null;
-
-        var avatar = null;
-        var themeIcon = null;
 
         /**
          * swaps values of settings at path1 and path2. setting values are
@@ -37,24 +35,26 @@ define(function(require, exports, module) {
             settings.set(path1, val);
         }
 
-        function show(div) {
-            if (div && div.$ext && div.$ext.style) {
-                div.$ext.style.display = "";
-                return true;
+        /**
+         * Shows/hides components (e.g., tree, status bar, etc).
+         *
+         * @param {boolean} show show/hide flag.
+         */
+        function showComponents(show) {
+            if (show) {
+                panels.activate("tree");
+                status.show();
+                // show avatar
+                ui.setStyleRule(".btnName", "display", "");
             }
             else {
-                return false;
+                panels.deactivate("tree");
+                status.hide();
+                // hide avatar
+                ui.setStyleRule(".btnName", "display", "none !important");
             }
-        }
 
-        function hide(div) {
-            if (div && div.$ext && div.$ext.style) {
-                div.$ext.style.display = "none";
-                return true;
-            }
-            else {
-                return false;
-            }
+           theme.showButton(show);
         }
 
         /**
@@ -70,10 +70,7 @@ define(function(require, exports, module) {
                     // toggle off presentation mode for ace and terminal
                     updateEditors();
 
-                    panels.activate("tree");
-                    status.show();
-                    show(avatar);
-                    show(themeIcon);
+                    showComponents(true);
                 }
                 if (override == presentationOn) {
                     return;
@@ -86,10 +83,8 @@ define(function(require, exports, module) {
                 updateEditors();
             }
 
-            presentationOn ? panels.deactivate("tree") : panels.activate("tree");
-            presentationOn ?  status.hide() : status.show();
-            presentationOn ? hide(avatar) : show(avatar);
-            presentationOn ? hide(themeIcon) : show(themeIcon);
+            // hide components (e.g., tree) in presentation only
+            showComponents(!presentationOn);
 
             // ensure menu item is in sync with the current mode
             menuItem.checked = presentationOn;
@@ -148,16 +143,6 @@ define(function(require, exports, module) {
                     }
                 }
             }, plugin);
-
-            // find avatar and theme icon
-            layout.findParent({name: "preferences"}).childNodes.forEach(function(node) {
-                if (node.class === "btnName") {
-                    avatar = node;
-                }
-                else if(node.class.indexOf("cs50-theme") !== -1) {
-                    themeIcon = node;
-                }
-            });
 
             togglePresentationMode(
                 settings.getBool("user/cs50/presentation/@on")
