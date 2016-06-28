@@ -121,8 +121,8 @@ define(function(require, exports, module) {
             settings.on("read", function() {
                 settings.setDefaults("user/cs50/presentation", [
                     ["presenting", false],
-                    ["editorFontSize", 20],
-                    ["terminalFontSize", 20]
+                    ["editorFontSize", 18],
+                    ["terminalFontSize", 18]
                 ]);
             });
 
