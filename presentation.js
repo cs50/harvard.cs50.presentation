@@ -46,20 +46,39 @@ define(function(require, exports, module) {
                 return;
 
             if (show) {
+
+                // show version number
+                info.showVersion();
+
+                // show file browser
                 panels.activate("tree");
+
+                // show status bar
                 status.show();
+
+                // show theme button
+                theme.showButton();
+
                 // show avatar
                 ui.setStyleRule(".btnName", "display", "initial");
             }
             else {
+
+                // hide version number
+                info.hideVersion();
+
+                // hide file browser
                 panels.deactivate("tree");
+
+                // hide status bar
                 status.hide();
+
+                // hide theme button
+                theme.hideButton();
+
                 // hide avatar
                 ui.setStyleRule(".btnName", "display", "none !important");
             }
-
-            info.showVersion(show);
-            theme.showButton(show);
         }
 
         /**
