@@ -1,12 +1,13 @@
 define(function(require, exports, module) {
     main.consumes = [
-        "ace.status", "c9.ide.cs50.theme", "layout", "menus", "panels",
-        "Plugin", "preferences", "settings", "tree", "ui"
+        "ace.status", "c9.ide.cs50.theme", "harvard.cs50.info", "layout",
+        "menus", "panels", "Plugin", "preferences", "settings", "tree", "ui"
     ];
     main.provides = ["c9.ide.cs50.presentation"];
     return main;
 
     function main(options, imports, register) {
+        var info = imports["harvard.cs50.info"];
         var layout = imports.layout;
         var menus = imports.menus;
         var panels = imports.panels;
@@ -57,7 +58,8 @@ define(function(require, exports, module) {
                 ui.setStyleRule(".btnName", "display", "none !important");
             }
 
-           theme.showButton(show);
+            info.showVersion(show);
+            theme.showButton(show);
         }
 
         /**
