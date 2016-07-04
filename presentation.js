@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
     main.consumes = [
-        "ace.status", "c9.ide.cs50.theme", "harvard.cs50.info", "layout",
+        "ace.status", "harvard.cs50.info", "harvard.cs50.theme", "layout",
         "menus", "panels", "Plugin", "preferences", "settings", "tree", "ui"
     ];
     main.provides = ["c9.ide.cs50.presentation"];
@@ -15,7 +15,7 @@ define(function(require, exports, module) {
         var prefs = imports.preferences;
         var settings = imports.settings;
         var status = imports["ace.status"];
-        var theme = imports["c9.ide.cs50.theme"];
+        var theme = imports["harvard.cs50.theme"];
         var ui = imports.ui;
 
         var plugin = new Plugin("CS50", main.consumes);
