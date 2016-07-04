@@ -1,12 +1,13 @@
 define(function(require, exports, module) {
     main.consumes = [
-        "ace.status", "c9.ide.cs50.theme", "layout", "menus", "panels",
-        "Plugin", "preferences", "settings", "tree", "ui"
+        "ace.status", "harvard.cs50.info", "harvard.cs50.theme", "layout",
+        "menus", "panels", "Plugin", "preferences", "settings", "tree", "ui"
     ];
     main.provides = ["c9.ide.cs50.presentation"];
     return main;
 
     function main(options, imports, register) {
+        var info = imports["harvard.cs50.info"];
         var layout = imports.layout;
         var menus = imports.menus;
         var panels = imports.panels;
@@ -14,7 +15,7 @@ define(function(require, exports, module) {
         var prefs = imports.preferences;
         var settings = imports.settings;
         var status = imports["ace.status"];
-        var theme = imports["c9.ide.cs50.theme"];
+        var theme = imports["harvard.cs50.theme"];
         var ui = imports.ui;
 
         var plugin = new Plugin("CS50", main.consumes);
@@ -45,19 +46,39 @@ define(function(require, exports, module) {
                 return;
 
             if (show) {
+
+                // show version number
+                info.showVersion();
+
+                // show file browser
                 panels.activate("tree");
+
+                // show status bar
                 status.show();
+
+                // show theme button
+                theme.showButton();
+
                 // show avatar
                 ui.setStyleRule(".btnName", "display", "initial");
             }
             else {
+
+                // hide version number
+                info.hideVersion();
+
+                // hide file browser
                 panels.deactivate("tree");
+
+                // hide status bar
                 status.hide();
+
+                // hide theme button
+                theme.hideButton();
+
                 // hide avatar
                 ui.setStyleRule(".btnName", "display", "none !important");
             }
-
-           theme.showButton(show);
         }
 
         /**
