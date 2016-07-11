@@ -3,7 +3,7 @@ define(function(require, exports, module) {
         "ace.status", "harvard.cs50.info", "harvard.cs50.theme", "layout",
         "menus", "panels", "Plugin", "preferences", "settings", "tree", "ui"
     ];
-    main.provides = ["c9.ide.cs50.presentation"];
+    main.provides = ["harvard.cs50.presentation"];
     return main;
 
     function main(options, imports, register) {
@@ -179,8 +179,15 @@ define(function(require, exports, module) {
             presenting = false;
         });
 
+        plugin.freezePublicAPI({
+            /**
+             * @property presenting whether presentation is on
+             * @readonly
+             */
+            get presenting(){ return presenting; }
+        });
         register(null, {
-            "c9.ide.cs50.presentation": plugin
+            "harvard.cs50.presentation": plugin
         });
     }
 });
