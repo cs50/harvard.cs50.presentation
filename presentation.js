@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     main.consumes = [
-        "ace.status", "harvard.cs50.info", "harvard.cs50.theme", "layout",
-        "menus", "panels", "Plugin", "preferences", "settings", "tree", "ui"
+        "ace.status", "harvard.cs50.info", "layout", "menus", "panels",
+        "Plugin", "preferences", "settings", "tree", "ui"
     ];
     main.provides = ["harvard.cs50.presentation"];
     return main;
@@ -15,7 +15,6 @@ define(function(require, exports, module) {
         var prefs = imports.preferences;
         var settings = imports.settings;
         var status = imports["ace.status"];
-        var theme = imports["harvard.cs50.theme"];
         var ui = imports.ui;
 
         var plugin = new Plugin("CS50", main.consumes);
@@ -56,9 +55,6 @@ define(function(require, exports, module) {
                 // show status bar
                 status.show();
 
-                // show theme button
-                theme.showButton();
-
                 // show avatar
                 ui.setStyleRule(".btnName", "display", "initial");
             }
@@ -72,9 +68,6 @@ define(function(require, exports, module) {
 
                 // hide status bar
                 status.hide();
-
-                // hide theme button
-                theme.hideButton();
 
                 // hide avatar
                 ui.setStyleRule(".btnName", "display", "none !important");
