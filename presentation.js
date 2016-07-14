@@ -1,16 +1,14 @@
 define(function(require, exports, module) {
     main.consumes = [
-        "ace.status", "harvard.cs50.info", "layout", "menus", "panels",
-        "Plugin", "preferences", "settings", "tree", "ui"
+        "ace.status", "harvard.cs50.info", "menus", "Plugin", "preferences",
+        "settings", "tree", "ui"
     ];
     main.provides = ["harvard.cs50.presentation"];
     return main;
 
     function main(options, imports, register) {
         var info = imports["harvard.cs50.info"];
-        var layout = imports.layout;
         var menus = imports.menus;
-        var panels = imports.panels;
         var Plugin = imports.Plugin;
         var prefs = imports.preferences;
         var settings = imports.settings;
@@ -36,9 +34,10 @@ define(function(require, exports, module) {
         }
 
         /**
-         * Shows/hides components (e.g., tree, status bar, etc).
+         * Toggles visibility of components that are shown or hidden as
+         * presentation is toggled.
          *
-         * @param {boolean} show show/hide flag.
+         * @param {boolean} show whether components are shown or hidden
          */
         function showComponents(show) {
             if (typeof show !== "boolean")
@@ -48,9 +47,6 @@ define(function(require, exports, module) {
 
                 // show version number
                 info.showVersion();
-
-                // show file browser
-                panels.activate("tree");
 
                 // show status bar
                 status.show();
@@ -62,9 +58,6 @@ define(function(require, exports, module) {
 
                 // hide version number
                 info.hideVersion();
-
-                // hide file browser
-                panels.deactivate("tree");
 
                 // hide status bar
                 status.hide();
@@ -82,16 +75,20 @@ define(function(require, exports, module) {
          */
         function togglePresentationMode(override) {
             if (typeof override === "boolean") {
+
                 // handle unloading when presentation is on
                 if (!override && presenting) {
+
                     // toggle off presentation mode for ace and terminal
                     updateEditors();
 
+                    // show components that were hidden on presenting
                     showComponents(true);
                 }
-                if (override == presenting) {
+
+                if (override === presenting)
                     return;
-                }
+
                 presenting = override;
             }
             else {
@@ -100,13 +97,16 @@ define(function(require, exports, module) {
                 updateEditors();
             }
 
-            // hide components (e.g., tree) in presentation only
+            // hide components that should be hidden on presenting
             showComponents(!presenting);
 
-            // ensure menu item is in sync with the current mode
+            // sync menu item
             menuItem.checked = presenting;
         }
 
+        /**
+         * Toggles presentation on or off for ace and terminal.
+         */
         function updateEditors() {
             swapSettings(
                 "user/cs50/presentation/@editorFontSize",
@@ -119,13 +119,13 @@ define(function(require, exports, module) {
         }
 
         plugin.on("load", function() {
+
             // add menu item to View menu
             menuItem = new ui.item({
                 type: "check",
                 caption: "Presentation Mode",
                 onclick: togglePresentationMode
             });
-
             menus.addItemByPath(
                 "View/PresentationDiv", new ui.divider(), 1, plugin
             );
@@ -141,9 +141,8 @@ define(function(require, exports, module) {
             });
 
             settings.on("write", function() {
-                if (settings.getBool("user/cs50/presentation/@presenting") !== presenting) {
+                if (settings.getBool("user/cs50/presentation/@presenting") !== presenting)
                     menus.click("View/Presentation Mode");
-                }
             });
 
             // add toggle button to preferences
@@ -173,6 +172,7 @@ define(function(require, exports, module) {
         });
 
         plugin.freezePublicAPI({
+
             /**
              * @property presenting whether presentation is on
              * @readonly
