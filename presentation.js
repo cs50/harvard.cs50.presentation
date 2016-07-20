@@ -1,13 +1,12 @@
 define(function(require, exports, module) {
     main.consumes = [
-        "ace.status", "harvard.cs50.info", "menus", "Plugin", "preferences",
+        "ace.status", "menus", "Plugin", "preferences",
         "settings", "tree", "ui"
     ];
     main.provides = ["harvard.cs50.presentation"];
     return main;
 
     function main(options, imports, register) {
-        var info = imports["harvard.cs50.info"];
         var menus = imports.menus;
         var Plugin = imports.Plugin;
         var prefs = imports.preferences;
@@ -44,10 +43,6 @@ define(function(require, exports, module) {
                 return;
 
             if (show) {
-
-                // show version number
-                info.showVersion();
-
                 // show status bar
                 status.show();
 
@@ -55,10 +50,6 @@ define(function(require, exports, module) {
                 ui.setStyleRule(".btnName", "display", "initial");
             }
             else {
-
-                // hide version number
-                info.hideVersion();
-
                 // hide status bar
                 status.hide();
 
