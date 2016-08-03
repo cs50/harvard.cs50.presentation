@@ -98,7 +98,7 @@ define(function(require, exports, module) {
             toggleElements(!presenting);
 
             // sync menu item
-            menuItem.checked = presenting;
+            menuItem.setAttribute("checked", presenting);
         }
 
         /**
