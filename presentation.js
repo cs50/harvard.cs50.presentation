@@ -1,12 +1,13 @@
 define(function(require, exports, module) {
     main.consumes = [
-        "ace.status", "menus", "Plugin", "preferences",
-        "settings", "tree", "ui"
+        "ace.status", "layout", "menus", "Plugin", "preferences", "settings",
+        "tree", "ui"
     ];
     main.provides = ["harvard.cs50.presentation"];
     return main;
 
     function main(options, imports, register) {
+        var layout = imports.layout;
         var menus = imports.menus;
         var Plugin = imports.Plugin;
         var prefs = imports.preferences;
@@ -18,6 +19,7 @@ define(function(require, exports, module) {
 
         var presenting = false;
         var menuItem = null;
+        var btnStats = null;
 
         /**
          * swaps values of settings at path1 and path2. setting values are
@@ -33,12 +35,12 @@ define(function(require, exports, module) {
         }
 
         /**
-         * Toggles visibility of components that are shown or hidden as
+         * Toggles visibility of elements that are shown or hidden as
          * presentation is toggled.
          *
-         * @param {boolean} show whether components are shown or hidden
+         * @param {boolean} show whether to show or hide elements
          */
-        function showComponents(show) {
+        function toggleElements(show) {
             if (typeof show !== "boolean")
                 return;
 
@@ -56,6 +58,10 @@ define(function(require, exports, module) {
                 // hide avatar
                 ui.setStyleRule(".btnName", "display", "none !important");
             }
+
+            // toggle stats button (Memory, CPU, and Disk info)
+            if (btnStats)
+                btnStats.setAttribute("visible", show);
         }
 
         /**
@@ -74,7 +80,7 @@ define(function(require, exports, module) {
                     updateEditors();
 
                     // show components that were hidden on presenting
-                    showComponents(true);
+                    toggleElements(true);
                 }
 
                 if (override === presenting)
@@ -89,7 +95,7 @@ define(function(require, exports, module) {
             }
 
             // hide components that should be hidden on presenting
-            showComponents(!presenting);
+            toggleElements(!presenting);
 
             // sync menu item
             menuItem.checked = presenting;
@@ -121,6 +127,14 @@ define(function(require, exports, module) {
                 "View/PresentationDiv", new ui.divider(), 1, plugin
             );
             menus.addItemByPath("View/Presentation Mode", menuItem, 2, plugin);
+
+            // find stats button
+            layout.findParent({ name: "preferences" }).childNodes.forEach(
+                function(e) {
+                    if (e.getAttribute("class").indexOf("stats-btn") > -1)
+                        btnStats = e;
+                }
+            );
 
             // default settings
             settings.on("read", function() {
@@ -159,6 +173,7 @@ define(function(require, exports, module) {
         plugin.on("unload", function() {
             togglePresentationMode(false);
             menuItem = null;
+            btnStats = null;
             presenting = false;
         });
 
