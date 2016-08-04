@@ -19,7 +19,7 @@ define(function(require, exports, module) {
 
         var presenting = false;
         var menuItem = null;
-        var btnStats = null;
+        var barExtras = null;
 
         /**
          * swaps values of settings at path1 and path2. setting values are
@@ -50,6 +50,9 @@ define(function(require, exports, module) {
 
                 // show avatar
                 ui.setStyleRule(".btnName", "display", "initial");
+
+                // show stats button
+                barExtras.$ext.classList.remove("presentation50");
             }
             else {
                 // hide status bar
@@ -57,11 +60,10 @@ define(function(require, exports, module) {
 
                 // hide avatar
                 ui.setStyleRule(".btnName", "display", "none !important");
-            }
 
-            // toggle stats button (Memory, CPU, and Disk info)
-            if (btnStats)
-                btnStats.setAttribute("visible", show);
+                // hide stats button
+                barExtras.$ext.classList.add("presentation50");
+            }
         }
 
         /**
@@ -129,12 +131,7 @@ define(function(require, exports, module) {
             menus.addItemByPath("View/Presentation Mode", menuItem, 2, plugin);
 
             // find stats button
-            layout.findParent({ name: "preferences" }).childNodes.forEach(
-                function(e) {
-                    if (e.getAttribute("class").indexOf("stats-btn") > -1)
-                        btnStats = e;
-                }
-            );
+            barExtras = layout.findParent({ name: "preferences" });
 
             // default settings
             settings.on("read", function() {
@@ -165,6 +162,8 @@ define(function(require, exports, module) {
                 }
             }, plugin);
 
+            ui.insertCss(require("text!./style.css"), options.staticPrefix, plugin);
+
             togglePresentationMode(
                 settings.getBool("user/cs50/presentation/@presenting")
             );
@@ -173,7 +172,7 @@ define(function(require, exports, module) {
         plugin.on("unload", function() {
             togglePresentationMode(false);
             menuItem = null;
-            btnStats = null;
+            barExtras = null;
             presenting = false;
         });
 
