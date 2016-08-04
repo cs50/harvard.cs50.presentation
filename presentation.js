@@ -1,12 +1,13 @@
 define(function(require, exports, module) {
     main.consumes = [
-        "ace.status", "menus", "Plugin", "preferences",
-        "settings", "tree", "ui"
+        "ace.status", "layout", "menus", "Plugin", "preferences", "settings",
+        "tree", "ui"
     ];
     main.provides = ["harvard.cs50.presentation"];
     return main;
 
     function main(options, imports, register) {
+        var layout = imports.layout;
         var menus = imports.menus;
         var Plugin = imports.Plugin;
         var prefs = imports.preferences;
@@ -18,6 +19,7 @@ define(function(require, exports, module) {
 
         var presenting = false;
         var menuItem = null;
+        var barExtras = null;
 
         /**
          * swaps values of settings at path1 and path2. setting values are
@@ -33,12 +35,12 @@ define(function(require, exports, module) {
         }
 
         /**
-         * Toggles visibility of components that are shown or hidden as
+         * Toggles visibility of elements that are shown or hidden as
          * presentation is toggled.
          *
-         * @param {boolean} show whether components are shown or hidden
+         * @param {boolean} show whether to show or hide elements
          */
-        function showComponents(show) {
+        function toggleElements(show) {
             if (typeof show !== "boolean")
                 return;
 
@@ -48,6 +50,9 @@ define(function(require, exports, module) {
 
                 // show avatar
                 ui.setStyleRule(".btnName", "display", "initial");
+
+                // show stats button
+                barExtras.$ext.classList.remove("presentation50");
             }
             else {
                 // hide status bar
@@ -55,6 +60,9 @@ define(function(require, exports, module) {
 
                 // hide avatar
                 ui.setStyleRule(".btnName", "display", "none !important");
+
+                // hide stats button
+                barExtras.$ext.classList.add("presentation50");
             }
         }
 
@@ -74,7 +82,7 @@ define(function(require, exports, module) {
                     updateEditors();
 
                     // show components that were hidden on presenting
-                    showComponents(true);
+                    toggleElements(true);
                 }
 
                 if (override === presenting)
@@ -89,10 +97,10 @@ define(function(require, exports, module) {
             }
 
             // hide components that should be hidden on presenting
-            showComponents(!presenting);
+            toggleElements(!presenting);
 
             // sync menu item
-            menuItem.checked = presenting;
+            menuItem.setAttribute("checked", presenting);
         }
 
         /**
@@ -121,6 +129,9 @@ define(function(require, exports, module) {
                 "View/PresentationDiv", new ui.divider(), 1, plugin
             );
             menus.addItemByPath("View/Presentation Mode", menuItem, 2, plugin);
+
+            // find stats button
+            barExtras = layout.findParent({ name: "preferences" });
 
             // default settings
             settings.on("read", function() {
@@ -151,6 +162,8 @@ define(function(require, exports, module) {
                 }
             }, plugin);
 
+            ui.insertCss(require("text!./style.css"), options.staticPrefix, plugin);
+
             togglePresentationMode(
                 settings.getBool("user/cs50/presentation/@presenting")
             );
@@ -159,6 +172,7 @@ define(function(require, exports, module) {
         plugin.on("unload", function() {
             togglePresentationMode(false);
             menuItem = null;
+            barExtras = null;
             presenting = false;
         });
 
