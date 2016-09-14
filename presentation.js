@@ -48,20 +48,14 @@ define(function(require, exports, module) {
                 // show status bar
                 status.show();
 
-                // show avatar
-                ui.setStyleRule(".btnName", "display", "initial");
-
-                // show stats button
+                // show elements hidden from menu bar
                 barExtras.$ext.classList.remove("presentation50");
             }
             else {
                 // hide status bar
                 status.hide();
 
-                // hide avatar
-                ui.setStyleRule(".btnName", "display", "none !important");
-
-                // hide stats button
+                // hide particular elements from menu bar
                 barExtras.$ext.classList.add("presentation50");
             }
         }
