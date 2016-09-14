@@ -1,3 +1,9 @@
+/* hide avatar in presentation only */
+.presentation50 .btnName {
+    display: none !important;
+}
+
+/* hide stats in presentation only */
 .presentation50 .stats-btn {
     padding: 0 !important;
     overflow: hidden;
