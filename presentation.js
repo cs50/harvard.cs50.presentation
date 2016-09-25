@@ -1,7 +1,6 @@
 define(function(require, exports, module) {
     main.consumes = [
-        "ace.status", "layout", "menus", "Plugin", "preferences", "settings",
-        "tree", "ui"
+        "ace.status", "layout", "menus", "Plugin", "settings", "tree", "ui"
     ];
     main.provides = ["harvard.cs50.presentation"];
     return main;
@@ -10,7 +9,6 @@ define(function(require, exports, module) {
         var layout = imports.layout;
         var menus = imports.menus;
         var Plugin = imports.Plugin;
-        var prefs = imports.preferences;
         var settings = imports.settings;
         var status = imports["ace.status"];
         var ui = imports.ui;
@@ -140,21 +138,6 @@ define(function(require, exports, module) {
                 if (settings.getBool("user/cs50/presentation/@presenting") !== presenting)
                     menus.click("View/Presentation Mode");
             });
-
-            // add toggle button to preferences
-            prefs.add({
-               "CS50" : {
-                    position: 25,
-                    "Presentation Mode" : {
-                        position: 10,
-                        "Presentation Mode" : {
-                            type: "checkbox",
-                            setting: "user/cs50/presentation/@presenting",
-                            position: 200
-                        }
-                    }
-                }
-            }, plugin);
 
             ui.insertCss(require("text!./style.css"), options.staticPrefix, plugin);
 
