@@ -47,14 +47,14 @@ define(function(require, exports, module) {
                 status.show();
 
                 // show elements hidden from menu bar
-                barExtras.$ext.classList.remove("presentation50");
+                barExtras.$ext.classList.remove("cs50-presentation");
             }
             else {
                 // hide status bar
                 status.hide();
 
                 // hide particular elements from menu bar
-                barExtras.$ext.classList.add("presentation50");
+                barExtras.$ext.classList.add("cs50-presentation");
             }
         }
 

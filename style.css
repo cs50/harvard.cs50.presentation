@@ -1,10 +1,10 @@
 /* hide avatar in presentation only */
-.presentation50 .btnName {
+.cs50-presentation .btnName {
     display: none !important;
 }
 
 /* hide stats in presentation only */
-.presentation50 .stats-btn {
+.cs50-presentation .stats-btn {
     padding: 0 !important;
     overflow: hidden;
     width: 0px !important;
