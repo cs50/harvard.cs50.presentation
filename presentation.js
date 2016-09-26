@@ -117,9 +117,9 @@ define(function(require, exports, module) {
                 caption: "Presentation Mode",
                 onclick: togglePresentationMode
             });
-            menus.addItemByPath(
-                "View/PresentationDiv", new ui.divider(), 1, plugin
-            );
+
+            // divider after "View/Less Comfortable"
+            menus.addItemByPath("View/~", new ui.divider(), 1, plugin);
             menus.addItemByPath("View/Presentation Mode", menuItem, 2, plugin);
 
             // find stats button
