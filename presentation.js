@@ -15,9 +15,33 @@ define(function(require, exports, module) {
 
         var plugin = new Plugin("CS50", main.consumes);
 
-        var presenting = false;
+        var presenting = null;
         var menuItem = null;
         var barExtras = null;
+
+        const listeners = [];
+
+        /**
+         * Registers listener to be called when presentation mode is toggled.
+         * Listener is passed true or false when presentation is toggled on or
+         * off respectively. If presenting is initialized, listener is called
+         * immediately. Otherwise, listener is called once presenting is
+         * initialized.
+         */
+        function addListener(listener) {
+
+            // ensure listener is a fuction and listener is registered at most once
+            if (typeof(listener) !== "function" || listeners.indexOf(listener) > -1)
+                return;
+
+            // register listener
+            listeners.push(listener);
+
+            // call listener if presenting was initialized
+            if (presenting !== null)
+                listener(presenting);
+        }
+
 
         /**
          * swaps values of settings at path1 and path2. setting values are
@@ -93,6 +117,9 @@ define(function(require, exports, module) {
 
             // sync menu item
             menuItem.setAttribute("checked", presenting);
+
+            // notify registered listeners
+            listeners.forEach(listener => listener(presenting));
         }
 
         /**
@@ -150,7 +177,7 @@ define(function(require, exports, module) {
             togglePresentationMode(false);
             menuItem = null;
             barExtras = null;
-            presenting = false;
+            presenting = null;
         });
 
         plugin.freezePublicAPI({
@@ -159,8 +186,10 @@ define(function(require, exports, module) {
              * @property presenting whether presentation is on
              * @readonly
              */
-            get presenting(){ return presenting; }
+            get presenting(){ return presenting; },
+            addListener: addListener
         });
+
         register(null, {
             "harvard.cs50.presentation": plugin
         });
