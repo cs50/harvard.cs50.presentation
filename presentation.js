@@ -186,7 +186,7 @@ define(function(require, exports, module) {
              * @property presenting whether presentation is on
              * @readonly
              */
-            get presenting(){ return presenting; },
+            get presenting() { return presenting; },
             addListener: addListener
         });
 
