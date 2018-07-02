@@ -15,7 +15,7 @@ define(function(require, exports, module) {
 
         var plugin = new Plugin("CS50", main.consumes);
 
-        var presenting = null;
+        var presenting;
         var menuItem = null;
         var barExtras = null;
 
@@ -38,7 +38,7 @@ define(function(require, exports, module) {
             listeners.push(listener);
 
             // call listener if presenting was initialized
-            if (presenting !== null)
+            if (presenting !== undefined)
                 listener(presenting);
         }
 
@@ -177,7 +177,7 @@ define(function(require, exports, module) {
             togglePresentationMode(false);
             menuItem = null;
             barExtras = null;
-            presenting = null;
+            presenting = undefined;
         });
 
         plugin.freezePublicAPI({
