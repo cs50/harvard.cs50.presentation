@@ -14,6 +14,7 @@ define(function(require, exports, module) {
         const ui = imports.ui;
 
         const plugin = new Plugin("CS50", main.consumes);
+        const defaultFontSize = 24;
 
         let presenting;
         let menuItem = null;
@@ -157,8 +158,8 @@ define(function(require, exports, module) {
             settings.on("read", () => {
                 settings.setDefaults("user/cs50/presentation", [
                     ["presenting", false],
-                    ["editorFontSize", 18],
-                    ["terminalFontSize", 18]
+                    ["editorFontSize", defaultFontSize],
+                    ["terminalFontSize", defaultFontSize]
                 ]);
             });
 
@@ -188,6 +189,11 @@ define(function(require, exports, module) {
              * @readonly
              */
             get presenting() { return presenting; },
+            /**
+             * @property defaultFontSize
+             * @readonly
+             */
+            get defaultFontSize() { return defaultFontSize; },
             addListener: addListener
         });
 
