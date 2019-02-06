@@ -161,6 +161,10 @@ define(function(require, exports, module) {
                     ["editorFontSize", defaultFontSize],
                     ["terminalFontSize", defaultFontSize]
                 ]);
+
+                togglePresentationMode(
+                    settings.getBool("user/cs50/presentation/@presenting")
+                );
             });
 
             settings.on("write", () => {
@@ -169,10 +173,6 @@ define(function(require, exports, module) {
             });
 
             ui.insertCss(require("text!./style.css"), options.staticPrefix, plugin);
-
-            togglePresentationMode(
-                settings.getBool("user/cs50/presentation/@presenting")
-            );
         });
 
         plugin.on("unload", () => {
