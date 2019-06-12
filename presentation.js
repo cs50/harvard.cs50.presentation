@@ -172,7 +172,7 @@ define(function(require, exports, module) {
                     menus.click("View/Presentation Mode");
             });
 
-            ui.insertCss(require("text!./style.css"), options.staticPrefix, plugin);
+            ui.insertCss(require("text!./style.css"), plugin);
         });
 
         plugin.on("unload", () => {
